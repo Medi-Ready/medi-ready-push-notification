@@ -4,6 +4,7 @@ const schedule = require("node-schedule");
 const router = express.Router();
 
 const { ONE_DAY, ONE_HOUR } = require("../constant");
+const { getUTCTime } = require("../utils/getUTCHour");
 const schedulePushNotification = require("../utils/notification");
 
 router.get("/", function (req, res, next) {
@@ -21,8 +22,7 @@ router.post("/notification", (req, res, next) => {
       const endDate = new Date(startDate.getTime() + duration * ONE_DAY + 9 * ONE_HOUR);
 
       doseTime.forEach((time) => {
-        const hour = String(alarmTime[time].split(":")[0]).padStart(2, "0");
-        const minute = String(alarmTime[time].split(":")[1]).padStart(2, "0");
+        const { hour, minute } = getUTCTime(alarmTime, time);
 
         schedule.scheduleJob(
           { start: startDate, end: endDate, rule: `${minute} ${hour} * * *` },
