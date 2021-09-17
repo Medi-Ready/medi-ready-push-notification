@@ -1,5 +1,7 @@
-module.exports = {
-  ONE_DAY: 60 * 60 * 24 * 1000,
-  ONE_HOUR: 60 * 60 * 1000,
+const MESSAGE = {
   PUSH_NOTIFICATION_MESSAGE: "💊 Medi Ready 💊",
+  PUSH_NOTIFICATION_CREATE_SUCCESS: "push notification successfully scheduled",
+  PUSH_NOTIFICATION_CREATE_FAIL: "creating push notification failed",
 };
+
+module.exports = { MESSAGE };

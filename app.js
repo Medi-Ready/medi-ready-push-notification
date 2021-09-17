@@ -10,19 +10,22 @@ const app = express();
 
 app.use(logger("dev"));
 app.use(cookieParser());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const index = require("./routes");
+const notificationRouter = require("./routes/notification");
 
-app.use("/", index);
+app.get("/", (req, res, next) => {
+  res.status(200).json({ message: "success" });
+});
 
-app.use(function (req, res, next) {
+app.use("/notification", notificationRouter);
+
+app.use((req, res, next) => {
   next(createError(404));
 });
 
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 

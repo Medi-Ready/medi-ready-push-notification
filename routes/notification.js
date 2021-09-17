@@ -1,18 +1,15 @@
 const express = require("express");
-const schedule = require("node-schedule");
+const router = express.Router();
 
 const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
+const schedule = require("node-schedule");
 
-const router = express.Router();
-dayjs.extend(utc);
-
-const { getUTCTime } = require("../utils/getUTCHour");
+const { MESSAGE } = require("../constant");
+const { getUTCHour } = require("../utils/getUTCHour");
 const schedulePushNotification = require("../utils/notification");
 
-router.get("/", function (req, res, next) {
-  res.json({ message: "success" });
-});
+dayjs.extend(utc);
 
 router.post("/notification", (req, res, next) => {
   const { notificationToken, duration, alarmTime, doseTimes } = req.body;
@@ -23,21 +20,21 @@ router.post("/notification", (req, res, next) => {
       const startDate = today.format();
       const endDate = today.add(Number(duration), "day").format();
 
-      const doseTime = Object.keys(doseTimes);
+      const times = Object.keys(doseTimes);
 
-      doseTime.forEach((time) => {
-        const { hour, minute } = getUTCTime(alarmTime, time);
+      for (let i = 0; i < times.length; i++) {
+        const { hour, minute } = getUTCHour(alarmTime, times[i]);
 
         schedule.scheduleJob(
           { start: startDate, end: endDate, rule: `${minute} ${hour} * * *` },
           () => schedulePushNotification(notificationToken)
         );
-      });
+      }
 
-      return res.json({ message: "success" });
+      return res.status(201).json({ message: MESSAGE.PUSH_NOTIFICATION_CREATE_SUCCESS });
     }
 
-    next(400);
+    res.status(400).json({ message: MESSAGE.PUSH_NOTIFICATION_CREATE_FAIL });
   } catch (error) {
     next(error);
   }

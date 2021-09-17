@@ -1,5 +1,5 @@
+const { MESSAGE } = require("../constant");
 const { Expo } = require("expo-server-sdk");
-const { PUSH_NOTIFICATION_MESSAGE } = require("../constant");
 
 const expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
@@ -17,7 +17,7 @@ const schedulePushNotification = (token) => {
     messages.push({
       to: pushToken,
       sound: "default",
-      body: PUSH_NOTIFICATION_MESSAGE,
+      body: MESSAGE.PUSH_NOTIFICATION_MESSAGE,
     });
   }
 
