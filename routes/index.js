@@ -1,9 +1,12 @@
 const express = require("express");
 const schedule = require("node-schedule");
 
-const router = express.Router();
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
 
-const { ONE_DAY, ONE_HOUR } = require("../constant");
+const router = express.Router();
+dayjs.extend(utc);
+
 const { getUTCTime } = require("../utils/getUTCHour");
 const schedulePushNotification = require("../utils/notification");
 
@@ -16,10 +19,11 @@ router.post("/notification", (req, res, next) => {
 
   try {
     if (notificationToken && duration && alarmTime && doseTimes) {
-      const doseTime = Object.keys(doseTimes);
+      const today = dayjs().utc();
+      const startDate = today.format();
+      const endDate = today.add(Number(duration), "day").format();
 
-      const startDate = new Date(Date.now());
-      const endDate = new Date(startDate.getTime() + duration * ONE_DAY + 9 * ONE_HOUR);
+      const doseTime = Object.keys(doseTimes);
 
       doseTime.forEach((time) => {
         const { hour, minute } = getUTCTime(alarmTime, time);
