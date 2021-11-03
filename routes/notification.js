@@ -11,7 +11,7 @@ const schedulePushNotification = require("../utils/notification");
 
 dayjs.extend(utc);
 
-router.post("/notification", (req, res, next) => {
+router.post("/", (req, res, next) => {
   const { notificationToken, duration, alarmTime, doseTimes } = req.body;
 
   try {
